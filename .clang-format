@@ -13,7 +13,7 @@ AllowAllArgumentsOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Never
-AllowShortCaseLabelsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: Never
@@ -29,8 +29,8 @@ BraceWrapping:
   AfterClass:      true
   AfterControlStatement: false
   AfterEnum:       true
-  AfterFunction:   true
-  AfterNamespace:  true
+  AfterFunction:   false
+  AfterNamespace:  false
   AfterObjCDeclaration: false
   AfterStruct:     true
   AfterUnion:      true
@@ -42,7 +42,7 @@ BraceWrapping:
   SplitEmptyRecord: false
   SplitEmptyNamespace: true
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Mozilla
+BreakBeforeBraces: Custom
 BreakBeforeInheritanceComma: false
 BreakInheritanceList: AfterColon
 BreakBeforeTernaryOperators: true

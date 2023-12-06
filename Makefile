@@ -24,7 +24,7 @@ GIT_DESCRIBE     = $(shell git describe --always --dirty)
 F_MCU   = -mmcu=${MCU}
 F_CPU   = -DF_CPU=${CLOCK}UL
 F_OPT   = -Os -gdwarf-2
-F_TYPES = -funsigned-char -funsigned-bitfields -ffunction-sections -fdata-sections -fpack-struct -fshort-enums
+F_TYPES = -funsigned-char -funsigned-bitfields -ffunction-sections -fdata-sections -fshort-enums
 F_DEP   = -MMD -MP -MF"$(@:%.o=%.d)"
 
 DEFINES = '-DVERSION_TXT="${GIT_DESCRIBE}"' -DPLATFORM=${PLATFORM}
