@@ -4,6 +4,9 @@
 #include <avr/wdt.h>
 #include <util/delay.h>
 
+class Pin
+{};
+
 int main()
 {
     DDRA |= (1 << 0);

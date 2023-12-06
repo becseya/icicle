@@ -10,7 +10,7 @@
                 "__AVR_ATtiny44A__"
             ],
             "compilerPath": "/usr/bin/clang",
-            "cStandard": "c17",
+            "cppStandard": "c++11",
             "intelliSenseMode": "linux-clang-x64"
         }
     ],

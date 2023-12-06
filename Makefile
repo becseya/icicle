@@ -14,8 +14,8 @@ DIR_SRC          = ./src
 
 OUTPUT_FILE_PATH = ${DIR_BUILD}/main.elf
 
-C_SOURCES        = $(shell find ${DIR_SRC} -name "*.c")
-OBJECTS          = $(subst ${DIR_SRC},${DIR_BIN},${C_SOURCES:.c=.o})
+C_SOURCES        = $(shell find ${DIR_SRC} -name "*.cpp")
+OBJECTS          = $(subst ${DIR_SRC},${DIR_BIN},${C_SOURCES:.cpp=.o})
 
 GIT_DESCRIBE     = $(shell git describe --always --dirty)
 
@@ -29,7 +29,7 @@ F_DEP   = -MMD -MP -MF"$(@:%.o=%.d)"
 
 DEFINES = '-DVERSION_TXT="${GIT_DESCRIBE}"' -DPLATFORM=${PLATFORM}
 
-C_FLAGS = -std=gnu99 -Wall -Werror ${DEFINES} ${F_OPT} ${F_TYPES} ${F_MCU} ${F_CPU} -c ${F_DEP}
+C_FLAGS = -std=c++11 -Wall -Werror ${DEFINES} ${F_OPT} ${F_TYPES} ${F_MCU} ${F_CPU} -c ${F_DEP}
 L_FLAGS = -Wl,-Map="${DIR_BUILD}/main.map" -Wl,--start-group  -Wl,--end-group -Wl,--gc-sections
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ ${DIR_BIN}:
 ${DIR_OUTPUT}:
 	mkdir -p $@
 
-${DIR_BIN}/%.o: ${DIR_SRC}/%.c Makefile | ${DIR_BIN}
+${DIR_BIN}/%.o: ${DIR_SRC}/%.cpp Makefile | ${DIR_BIN}
 	avr-gcc ${C_FLAGS}  $< -o $@
 
 ${OUTPUT_FILE_PATH}: ${OBJECTS} | ${DIR_OUTPUT}
@@ -69,7 +69,7 @@ clean-deep: clean
 .PHONY: format-all
 
 format-all:
-	find ./src -name "*.h" -o -name "*.c" | xargs clang-format -i
+	find ./src -name "*.hpp" -o -name "*.cpp" | xargs clang-format -i
 
 flash: ${OUTPUT_FILE_PATH}
 	avrdude -P usb -c usbasp -F -p ${MCU_USBASP} -U flash:w:${DIR_BUILD}/main.hex:i
