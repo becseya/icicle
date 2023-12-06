@@ -92,9 +92,12 @@ const auto& LAST_LED = LEDS[NUM_LEDS - 1];
 // --------------------------------------------------------------------------------------------------------------------
 
 // User defined
-static constexpr uint32_t FADE_TIME_MS = 900;
+static constexpr uint32_t FALL_TIME_MS    = 1000;
+static constexpr uint32_t FADE_TIME_MS    = 900;
+static constexpr uint32_t SILENCE_TIME_MS = 2000;
 
 // Calculated
+static constexpr uint32_t FALL_DELAY_MS    = FALL_TIME_MS / (NUM_LEDS - 1); // Last one is fading not falling
 static constexpr uint32_t FADER_ITERATIONS = FADE_TIME_MS * 1000 / SoftwarePwm::UPDATE_TIME_US;
 
 int main() {
@@ -114,7 +117,7 @@ int main() {
                 continue;
 
             led.set(true);
-            _delay_ms(100);
+            _delay_ms(FALL_DELAY_MS);
             led.set(false);
         }
 
@@ -136,7 +139,7 @@ int main() {
 
         // silence
         LAST_LED.set(false);
-        _delay_ms(2000);
+        _delay_ms(SILENCE_TIME_MS);
     }
 
     return 0;
