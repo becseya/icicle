@@ -29,6 +29,46 @@ class LedPin
     const uint8_t     pinMask;
 };
 
+class SoftwarePwm
+{
+  public:
+    // WARNING ! Must be determined by running tests
+    static constexpr unsigned UPDATE_TIME_US = 18;
+
+    static constexpr unsigned DUTY_CYCLE_RESOULTION = 256;
+
+    SoftwarePwm(const LedPin& led)
+        : led(led)
+        , counter(0)
+        , dutyCycle(0xFF)
+
+    {
+        led.set(true);
+    }
+
+    void update() {
+        if (counter == 0) {
+            if (dutyCycle != 0)
+                led.set(true);
+
+        } else if (counter == dutyCycle) {
+            if (dutyCycle != 0xFF)
+                led.set(false);
+        }
+
+        counter++;
+    }
+
+    void setDutyCycle(uint8_t dutyCycle_) {
+        dutyCycle = dutyCycle_;
+    }
+
+  private:
+    const LedPin& led;
+    uint8_t       counter;
+    uint8_t       dutyCycle;
+};
+
 // --------------------------------------------------------------------------------------------------------------------
 
 static constexpr uint8_t NUM_LEDS = 11;
@@ -47,7 +87,15 @@ const LedPin LEDS[NUM_LEDS] = {
     LedPin(PORTB, 0), //
 };
 
+const auto& LAST_LED = LEDS[NUM_LEDS - 1];
+
 // --------------------------------------------------------------------------------------------------------------------
+
+// User defined
+static constexpr uint32_t FADE_TIME_MS = 900;
+
+// Calculated
+static constexpr uint32_t FADER_ITERATIONS = FADE_TIME_MS * 1000 / SoftwarePwm::UPDATE_TIME_US;
 
 int main() {
 
@@ -60,11 +108,35 @@ int main() {
     DDRB |= 0b111;
 
     while (1) {
+        // fall
         for (auto& led : LEDS) {
+            if (&led == &LAST_LED)
+                continue;
+
             led.set(true);
             _delay_ms(100);
             led.set(false);
         }
+
+        // fade out
+        uint8_t  dutyCycle = 255;
+        uint32_t j         = 0;
+
+        SoftwarePwm fader(LAST_LED);
+
+        for (uint32_t i = 0; i < FADER_ITERATIONS; i++) {
+            fader.update();
+
+            if (++j == FADER_ITERATIONS / SoftwarePwm::DUTY_CYCLE_RESOULTION) {
+                fader.setDutyCycle(dutyCycle);
+                dutyCycle--;
+                j = 0;
+            }
+        }
+
+        // silence
+        LAST_LED.set(false);
+        _delay_ms(2000);
     }
 
     return 0;
