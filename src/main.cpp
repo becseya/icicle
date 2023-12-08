@@ -89,12 +89,32 @@ const LedPin LEDS[NUM_LEDS] = {
 
 const auto& LAST_LED = LEDS[NUM_LEDS - 1];
 
+void sleep_1s() {
+    // steup WDT
+    wdt_reset();
+    WDTCSR = (1 << WDIE) | (0 << WDP3) | 0b110; // 1 s timeout
+    WDTCSR |= (1 << WDE);
+
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+
+    // sleep
+    sleep_enable();
+    sleep_bod_disable();
+    sei();
+    sleep_cpu();
+
+    // wake
+    sleep_disable();
+    wdt_disable();
+    cli();
+}
+
 // --------------------------------------------------------------------------------------------------------------------
 
 // User defined
-static constexpr uint32_t FALL_TIME_MS    = 700;
-static constexpr uint32_t FADE_TIME_MS    = 700;
-static constexpr uint32_t SILENCE_TIME_MS = 3000;
+static constexpr uint32_t FALL_TIME_MS   = 700;
+static constexpr uint32_t FADE_TIME_MS   = 700;
+static constexpr uint32_t SILENCE_TIME_S = 3;
 
 // Calculated
 static constexpr uint32_t FALL_DELAY_MS    = FALL_TIME_MS / (NUM_LEDS - 1); // Last one is fading not falling
@@ -139,8 +159,11 @@ int main() {
 
         // silence
         LAST_LED.set(false);
-        _delay_ms(SILENCE_TIME_MS);
+        for (uint8_t i = 0; i < SILENCE_TIME_S; i++)
+            sleep_1s();
     }
 
     return 0;
 }
+
+ISR(WATCHDOG_vect) {}
