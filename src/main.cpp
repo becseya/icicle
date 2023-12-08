@@ -92,9 +92,9 @@ const auto& LAST_LED = LEDS[NUM_LEDS - 1];
 // --------------------------------------------------------------------------------------------------------------------
 
 // User defined
-static constexpr uint32_t FALL_TIME_MS    = 1000;
-static constexpr uint32_t FADE_TIME_MS    = 900;
-static constexpr uint32_t SILENCE_TIME_MS = 2000;
+static constexpr uint32_t FALL_TIME_MS    = 700;
+static constexpr uint32_t FADE_TIME_MS    = 700;
+static constexpr uint32_t SILENCE_TIME_MS = 3000;
 
 // Calculated
 static constexpr uint32_t FALL_DELAY_MS    = FALL_TIME_MS / (NUM_LEDS - 1); // Last one is fading not falling
